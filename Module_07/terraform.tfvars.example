@@ -1,0 +1,7 @@
+# Copiez ce fichier en "terraform.tfvars" pour l'utiliser
+project     = "formation-cloud"
+environment = "dev"
+
+tags = {
+  Owner = "MONNIER"
+}
