@@ -56,3 +56,30 @@ resource "aws_vpc_security_group_egress_rule" "web_all" {
   ip_protocol       = "-1"
   cidr_ipv4         = "0.0.0.0/0"
 }
+
+
+resource "aws_instance" "bastion" {
+  ami                    = data.aws_ami.al2023.id
+  instance_type          = var.instance_type
+  subnet_id              = aws_subnet.public[var.azs[0]].id
+  vpc_security_group_ids = [aws_security_group.bastion.id]
+  key_name               = aws_key_pair.formation.key_name
+
+  associate_public_ip_address = true
+
+  tags = {
+    Name = "TP-PMONNIER-bastion"
+    Role = "bastion"
+  }
+}
+
+resource "aws_eip" "bastion" {
+  instance = aws_instance.bastion.id
+  domain   = "vpc"
+
+  tags = {
+    Name = "TP-PMONNIER-bastion-eip"
+  }
+
+  depends_on = [aws_internet_gateway.main]
+}
