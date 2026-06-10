@@ -1,0 +1,58 @@
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour3$ mkdir Mini-exercice
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour3$ cd Mini-exercice/
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour3/Mini-exercice$ ls
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour3/Mini-exercice$ nano variables.tf
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour3/Mini-exercice$ nano locals.tf
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour3/Mini-exercice$ nano outputs.tf
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour3/Mini-exercice$ ls
+locals.tf  outputs.tf  variables.tf
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour3/Mini-exercice$ terraform plan
+
+Changes to Outputs:
+  + config = {
+      + cidrs      = [
+          + "10.0.1.0/24",
+        ]
+      + nat_count  = 1
+      + prefix     = "monprojet-dev"
+      + versioning = false
+    }
+
+You can apply this plan to save these new output values to the Terraform state, without changing any real
+infrastructure.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+Note: You didn't use the -out option to save this plan, so Terraform can't guarantee to take exactly these actions
+if you run "terraform apply" now.
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour3/Mini-exercice$ terraform console
+> local.env_config["dev"]
+{
+  "nat_count" = 1
+  "versioning" = false
+}
+> local.public_cidrs
+[
+  "10.0.1.0/24",
+]
+> exit
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour3/Mini-exercice$ terraform plan -var="environment=prod"
+
+Changes to Outputs:
+  + config = {
+      + cidrs      = [
+          + "10.0.1.0/24",
+        ]
+      + nat_count  = 2
+      + prefix     = "monprojet-prod"
+      + versioning = true
+    }
+
+You can apply this plan to save these new output values to the Terraform state, without changing any real
+infrastructure.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+Note: You didn't use the -out option to save this plan, so Terraform can't guarantee to take exactly these actions
+if you run "terraform apply" now.
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour3/Mini-exercice$ 
