@@ -69,7 +69,8 @@ resource "aws_instance" "bastion" {
 
  tags = {
    Name        = "TP-PMONNIER-bastion"
-   Owner       = "PMONNIER"
+   Owner       = "etudiant22"
+#   Owner       = "PMONNIER"
    Project     = "TP03"
    Environment = "dev"
    Role        = "bastion"
