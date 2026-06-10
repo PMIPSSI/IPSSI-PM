@@ -67,11 +67,21 @@ resource "aws_instance" "bastion" {
 
   associate_public_ip_address = true
 
-  tags = {
-    Name = "TP-PMONNIER-bastion"
-    Role = "bastion"
+ tags = {
+   Name        = "TP-PMONNIER-bastion"
+   Owner       = "PMONNIER"
+   Project     = "TP03"
+   Environment = "dev"
+   Role        = "bastion"
   }
 }
+
+
+#tags = {
+#  Name = "TP-PMONNIER-bastion"
+#  Role = "bastion"
+# }
+#}
 
 resource "aws_eip" "bastion" {
   instance = aws_instance.bastion.id
