@@ -1,0 +1,37 @@
+  Enter a value: yes
+
+aws_nat_gateway.main: Creating...
+aws_nat_gateway.main: Still creating... [10s elapsed]
+aws_nat_gateway.main: Still creating... [20s elapsed]
+aws_nat_gateway.main: Still creating... [30s elapsed]
+aws_nat_gateway.main: Still creating... [40s elapsed]
+aws_nat_gateway.main: Still creating... [50s elapsed]
+aws_nat_gateway.main: Still creating... [1m0s elapsed]
+aws_nat_gateway.main: Still creating... [1m10s elapsed]
+aws_nat_gateway.main: Still creating... [1m20s elapsed]
+aws_nat_gateway.main: Still creating... [1m30s elapsed]
+aws_nat_gateway.main: Creation complete after 1m34s [id=nat-066a359e38689f9b9]
+aws_route_table.private: Creating...
+aws_route_table.private: Creation complete after 1s [id=rtb-01dfb21b88dff4111]
+aws_route_table_association.private["eu-west-3b"]: Creating...
+aws_route_table_association.private["eu-west-3a"]: Creating...
+aws_route_table_association.private["eu-west-3a"]: Creation complete after 0s [id=rtbassoc-08645e5ae5cc488c0]
+aws_route_table_association.private["eu-west-3b"]: Creation complete after 0s [id=rtbassoc-0871f5c353014d444]
+
+Apply complete! Resources: 4 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+bastion_security_group_id = "sg-0064d886ec532a289"
+nat_gateway_public_ip = "52.47.89.29"
+private_subnet_ids = {
+  "eu-west-3a" = "subnet-0cfd9d02350c96974"
+  "eu-west-3b" = "subnet-0a829112f1512044f"
+}
+public_subnet_ids = {
+  "eu-west-3a" = "subnet-048821de6bacee97c"
+  "eu-west-3b" = "subnet-0f3b2a64d0b437aed"
+}
+vpc_cidr = "10.0.0.0/16"
+vpc_id = "vpc-0923887abffbe80d3"
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour3/tp02-vpc$ 

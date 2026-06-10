@@ -76,7 +76,7 @@ resource "aws_eip" "nat" {
 # -----------------------------------------------------------------------------
 resource "aws_nat_gateway" "main" {
   allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public[var.azs[0]].id
+  subnet_id     = aws_subnet.public[var.azs[1]].id
 
   tags = {
     Name = "${local.name_prefix}-nat"
