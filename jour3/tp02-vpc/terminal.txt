@@ -35,3 +35,127 @@ public_subnet_ids = {
 vpc_cidr = "10.0.0.0/16"
 vpc_id = "vpc-0923887abffbe80d3"
 spectre@PM-DELL:~/terraform/IPSSI-PM/jour3/tp02-vpc$ 
+
+
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour3/tp02-vpc$ # Recuperer les IDs
+VPC_ID=$(terraform output -raw vpc_id)
+
+# 1. Le VPC existe
+aws ec2 describe-vpcs --vpc-ids "$VPC_ID" --query 'Vpcs[0].CidrBlock'
+
+# 2. 4 subnets dans 2 AZ, 2 publics + 2 prives
+aws ec2 describe-subnets \
+  --filters "Name=vpc-id,Values=$VPC_ID" \
+  --query 'Subnets[].[SubnetId, AvailabilityZone, CidrBlock, Tags[?Key==`Tier`].Value | [0]]' \
+  --output table
+
+# 3. IGW attache
+aws ec2 describe-internet-gateways \
+  --filters "Name=attachment.vpc-id,Values=$VPC_ID" \
+  --query 'InternetGateways[0].InternetGatewayId'
+
+# 4. NAT Gateway
+aws ec2 describe-nat-gateways \
+  --filter "Name=vpc-id,Values=$VPC_ID" \
+  --query 'NatGateways[0].[NatGatewayId, State, NatGatewayAddresses[0].PublicIp]'
+
+# 5. Route tables
+aws ec2 describe-route-tables \
+  --filters "Name=vpc-id,Values=$VPC_ID" \
+  --query 'RouteTables[].[Tags[?Key==`Name`].Value | [0], Routes[?DestinationCidrBlock==`0.0.0.0/0`].[GatewayId, NatGatewayId]]'
+
+# 6. Security Group
+aws ec2 describe-security-groups \
+  --filters "Name=vpc-id,Values=$VPC_ID" "Name=group-name,Values=*bastion*"
+"10.0.0.0/16"
+------------------------------------------------------------------------
+|                            DescribeSubnets                           |
++---------------------------+-------------+----------------+-----------+
+|  subnet-0f3b2a64d0b437aed |  eu-west-3b |  10.0.2.0/24   |  public   |
+|  subnet-0cfd9d02350c96974 |  eu-west-3a |  10.0.101.0/24 |  private  |
+|  subnet-048821de6bacee97c |  eu-west-3a |  10.0.1.0/24   |  public   |
+|  subnet-0a829112f1512044f |  eu-west-3b |  10.0.102.0/24 |  private  |
++---------------------------+-------------+----------------+-----------+
+"igw-0267f62dd953a0bb3"
+[
+    "nat-066a359e38689f9b9",
+    "available",
+    "52.47.89.29"
+]
+[
+    [
+        null,
+        []
+    ],
+    [
+        "formation-dev-private-rt",
+        [
+            [
+                null,
+                "nat-066a359e38689f9b9"
+            ]
+        ]
+    ],
+    [
+        "formation-dev-public-rt",
+        [
+            [
+                "igw-0267f62dd953a0bb3",
+                null
+            ]
+        ]
+    ]
+]
+{
+    "SecurityGroups": [
+        {
+            "GroupId": "sg-0064d886ec532a289",
+            "IpPermissionsEgress": [
+                {
+                    "IpProtocol": "-1",
+                    "UserIdGroupPairs": [],
+                    "IpRanges": [
+                        {
+                            "Description": "Egress all",
+                            "CidrIp": "0.0.0.0/0"
+                        }
+                    ],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": []
+                }
+            ],
+            "Tags": [
+                {
+                    "Key": "Owner",
+                    "Value": "etudiant22"
+                },
+                {
+                    "Key": "Name",
+                    "Value": "formation-dev-bastion-sg"
+                }
+            ],
+            "VpcId": "vpc-0923887abffbe80d3",
+            "SecurityGroupArn": "arn:aws:ec2:eu-west-3:039497794217:security-group/sg-0064d886ec532a289",
+            "OwnerId": "039497794217",
+            "GroupName": "formation-dev-bastion-sg",
+            "Description": "Allow SSH to bastion from authorized IP",
+            "IpPermissions": [
+                {
+                    "IpProtocol": "tcp",
+                    "FromPort": 22,
+                    "ToPort": 22,
+                    "UserIdGroupPairs": [],
+                    "IpRanges": [
+                        {
+                            "Description": "SSH depuis IP autorisee",
+                            "CidrIp": "0.0.0.0/0"
+                        }
+                    ],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": []
+                }
+            ]
+        }
+    ]
+}
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour3/tp02-vpc$ 
