@@ -21,14 +21,21 @@ data "aws_ami" "al2023" {
 resource "aws_key_pair" "formation" {
   key_name   = "${local.name_prefix}-key"
   public_key = file(pathexpand(var.public_key_path))
+
+  tags = {
+    Name  = "${local.name_prefix}-key"
+    Owner = "etudiant22"
+  }
 }
+
 resource "aws_security_group" "web" {
   name        = "${local.name_prefix}-web-sg"
   description = "Allow SSH/HTTP from bastion SG only"
   vpc_id      = aws_vpc.main.id
 
   tags = {
-    Name = "TP-PMONNIER-web-sg"
+    Name  = "TP-PMONNIER-web-sg"
+    Owner = "etudiant22"
   }
 }
 
@@ -57,39 +64,35 @@ resource "aws_vpc_security_group_egress_rule" "web_all" {
   cidr_ipv4         = "0.0.0.0/0"
 }
 
-
 resource "aws_instance" "bastion" {
-  ami                    = data.aws_ami.al2023.id
-  instance_type          = var.instance_type
-  subnet_id              = aws_subnet.public[var.azs[0]].id
-  vpc_security_group_ids = [aws_security_group.bastion.id]
-  key_name               = aws_key_pair.formation.key_name
-
+  ami                         = data.aws_ami.al2023.id
+  instance_type               = var.instance_type
+  subnet_id                   = aws_subnet.public[var.azs[0]].id
+  vpc_security_group_ids      = [aws_security_group.bastion.id]
+  key_name                    = aws_key_pair.formation.key_name
   associate_public_ip_address = true
 
- tags = {
-   Name        = "TP-PMONNIER-bastion"
-   Owner       = "etudiant22"
-#   Owner       = "PMONNIER"
-   Project     = "TP03"
-   Environment = "dev"
-   Role        = "bastion"
+  tags = {
+    Name        = "TP-PMONNIER-bastion"
+    Owner       = "etudiant22"
+    Project     = "TP03"
+    Environment = "dev"
+    Role        = "bastion"
+  }
+
+  volume_tags = {
+    Name  = "TP-PMONNIER-bastion-volume"
+    Owner = "etudiant22"
   }
 }
-
-
-#tags = {
-#  Name = "TP-PMONNIER-bastion"
-#  Role = "bastion"
-# }
-#}
 
 resource "aws_eip" "bastion" {
   instance = aws_instance.bastion.id
   domain   = "vpc"
 
   tags = {
-    Name = "TP-PMONNIER-bastion-eip"
+    Name  = "TP-PMONNIER-bastion-eip"
+    Owner = "etudiant22"
   }
 
   depends_on = [aws_internet_gateway.main]
