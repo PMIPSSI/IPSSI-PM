@@ -1,0 +1,128 @@
+pectre@PM-DELL:~/terraform/IPSSI-PM/jour3/tp03-web-ec2$ ssh -i ~/.ssh/id_rsa -A ec2-user@15.224.80.144
+^C
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour3/tp03-web-ec2$ ^C
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour3/tp03-web-ec2$ curl -s https://checkip.amazonaws.com
+80.15.168.104
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour3/tp03-web-ec2$ nano terraform.tfvars
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour3/tp03-web-ec2$ terraform apply
+data.aws_ami.al2023: Reading...
+aws_key_pair.formation: Refreshing state... [id=tp03-PMONNIER-dev-etudiant22-key]
+aws_vpc.main: Refreshing state... [id=vpc-0f96951cf194c671d]
+data.aws_ami.al2023: Read complete after 1s [id=ami-0f1c58f03cab73f2d]
+aws_security_group.bastion: Refreshing state... [id=sg-0fafe32f27fe56242]
+aws_subnet.public["eu-west-3b"]: Refreshing state... [id=subnet-0af7b165fe56160d0]
+aws_subnet.public["eu-west-3a"]: Refreshing state... [id=subnet-0e7df7713940cbb82]
+aws_subnet.private["eu-west-3b"]: Refreshing state... [id=subnet-0a11816e5159ba3fa]
+aws_internet_gateway.main: Refreshing state... [id=igw-0f3a870e47b5a4543]
+aws_subnet.private["eu-west-3a"]: Refreshing state... [id=subnet-093be51d72804ba37]
+aws_security_group.web: Refreshing state... [id=sg-04771bb5540011eae]
+aws_vpc_security_group_egress_rule.bastion_all: Refreshing state... [id=sgr-008571f1a28ed1565]
+aws_vpc_security_group_ingress_rule.bastion_ssh: Refreshing state... [id=sgr-05945d2ce4e7de148]
+aws_eip.nat: Refreshing state... [id=eipalloc-09c22698ff258fd0b]
+aws_route_table.public: Refreshing state... [id=rtb-00b8e94c761d419d2]
+aws_vpc_security_group_egress_rule.web_all: Refreshing state... [id=sgr-047ef3aa77c04fd64]
+aws_vpc_security_group_ingress_rule.web_http: Refreshing state... [id=sgr-047a420ba96a37faa]
+aws_vpc_security_group_ingress_rule.web_ssh: Refreshing state... [id=sgr-0c3fb01cef73f5010]
+aws_instance.bastion: Refreshing state... [id=i-0500773667a659873]
+aws_instance.web["eu-west-3a"]: Refreshing state... [id=i-0fbd01e14eae212e2]
+aws_instance.web["eu-west-3b"]: Refreshing state... [id=i-0ec4a81e53b51b434]
+aws_route_table_association.public["eu-west-3a"]: Refreshing state... [id=rtbassoc-01be01361aab4de22]
+aws_route_table_association.public["eu-west-3b"]: Refreshing state... [id=rtbassoc-06a844c44cfedf550]
+aws_nat_gateway.main: Refreshing state... [id=nat-0d0b057fdf4d6caf2]
+aws_route_table.private: Refreshing state... [id=rtb-020608fa96d785947]
+aws_route_table_association.private["eu-west-3a"]: Refreshing state... [id=rtbassoc-0ca181367777010d5]
+aws_route_table_association.private["eu-west-3b"]: Refreshing state... [id=rtbassoc-01ea35af9355805d4]
+aws_eip.bastion: Refreshing state... [id=eipalloc-09ddaaaef2bca8917]
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated
+with the following symbols:
+  ~ update in-place
+
+Terraform will perform the following actions:
+
+  # aws_vpc_security_group_ingress_rule.bastion_ssh will be updated in-place
+  ~ resource "aws_vpc_security_group_ingress_rule" "bastion_ssh" {
+      ~ cidr_ipv4              = "87.89.147.217/32" -> "80.15.168.104/32"
+        id                     = "sgr-05945d2ce4e7de148"
+        # (8 unchanged attributes hidden)
+    }
+
+Plan: 0 to add, 1 to change, 0 to destroy.
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+aws_vpc_security_group_ingress_rule.bastion_ssh: Modifying... [id=sgr-05945d2ce4e7de148]
+aws_vpc_security_group_ingress_rule.bastion_ssh: Modifications complete after 0s [id=sgr-05945d2ce4e7de148]
+
+Apply complete! Resources: 0 added, 1 changed, 0 destroyed.
+
+Outputs:
+
+bastion_public_dns = "ec2-15-224-80-144.eu-west-3.compute.amazonaws.com"
+bastion_public_ip = "15.224.80.144"
+ssh_bastion_command = "ssh -i ~/.ssh/id_rsa -A ec2-user@15.224.80.144"
+web_instance_ids = {
+  "eu-west-3a" = "i-0fbd01e14eae212e2"
+  "eu-west-3b" = "i-0ec4a81e53b51b434"
+}
+web_private_ips = {
+  "eu-west-3a" = "10.0.101.129"
+  "eu-west-3b" = "10.0.102.183"
+}
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour3/tp03-web-ec2$ ssh -i ~/.ssh/id_rsa -A ec2-user@15.224.80.144
+The authenticity of host '15.224.80.144 (15.224.80.144)' can't be established.
+ED25519 key fingerprint is SHA256:UTJHT8HZGpY6wLqx+AqBdeRcITi5P6FDoWDKNRuNxLE.
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '15.224.80.144' (ED25519) to the list of known hosts.
+   ,     #_
+   ~\_  ####_        Amazon Linux 2023
+  ~~  \_#####\
+  ~~     \###|
+  ~~       \#/ ___   https://aws.amazon.com/linux/amazon-linux-2023
+   ~~       V~' '->
+    ~~~         /
+      ~~._.   _/
+         _/ _/
+       _/m/'
+[ec2-user@ip-10-0-1-248 ~]$ ls
+[ec2-user@ip-10-0-1-248 ~]$ cat /etc/os-release 
+NAME="Amazon Linux"
+VERSION="2023"
+ID="amzn"
+ID_LIKE="fedora"
+VERSION_ID="2023"
+PLATFORM_ID="platform:al2023"
+PRETTY_NAME="Amazon Linux 2023.12.20260608"
+ANSI_COLOR="0;33"
+CPE_NAME="cpe:2.3:o:amazon:amazon_linux:2023"
+HOME_URL="https://aws.amazon.com/linux/amazon-linux-2023/"
+DOCUMENTATION_URL="https://docs.aws.amazon.com/linux/"
+SUPPORT_URL="https://aws.amazon.com/premiumsupport/"
+BUG_REPORT_URL="https://github.com/amazonlinux/amazon-linux-2023"
+VENDOR_NAME="AWS"
+VENDOR_URL="https://aws.amazon.com/"
+SUPPORT_END="2029-06-30"
+[ec2-user@ip-10-0-1-248 ~]$ exit
+logout
+Connection to 15.224.80.144 closed.
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour3/tp03-web-ec2$ git add .
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour3/tp03-web-ec2$ git commit -m "ssh OK"
+[main cefed1a] ssh OK
+ 1 file changed, 24 insertions(+)
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour3/tp03-web-ec2$ git push
+Username for 'https://github.com': PMIPSSI
+Password for 'https://PMIPSSI@github.com': 
+Énumération des objets: 9, fait.
+Décompte des objets: 100% (9/9), fait.
+Compression par delta en utilisant jusqu'à 8 fils d'exécution
+Compression des objets: 100% (5/5), fait.
+Écriture des objets: 100% (5/5), 670 octets | 670.00 KiO/s, fait.
+Total 5 (delta 3), réutilisés 0 (delta 0), réutilisés du paquet 0 (depuis 0)
+remote: Resolving deltas: 100% (3/3), completed with 3 local objects.
+To https://github.com/PMIPSSI/IPSSI-PM.git
+   2bc6831..cefed1a  main -> main
