@@ -1,0 +1,126 @@
+
+Apply complete! Resources: 17 added, 0 changed, 0 destroyed.
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour4/tp04-multi-env/envs/staging$ aws s3 ls "s3://tf-state-etudiant22-formation/envs/" --recursive
+2026-06-11 16:52:11      27915 envs/dev/vpc/terraform.tfstate
+2026-06-11 16:55:55      27112 envs/staging/vpc/terraform.tfstate
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour4/tp04-multi-env/envs/staging$ aws ec2 describe-vpcs --query 'Vpcs[].[VpcId, CidrBlock, Tags[?Key==Environment].Value | [0]]' --output table
+---------------------------------------------------
+|                  DescribeVpcs                   |
++------------------------+----------------+-------+
+|  vpc-01656afc88dc8a105 |  10.20.0.0/16  |  None |
+|  vpc-0cabab7f7a0ce0c1b |  10.0.0.0/16   |  None |
+|  vpc-0f57e8c21a2321637 |  10.10.0.0/16  |  None |
+|  vpc-0ba345f689f945773 |  10.20.0.0/16  |  None |
+|  vpc-0ea6f097cb428d514 |  10.10.0.0/16  |  None |
+|  vpc-0924baa923ad3a86c |  10.10.0.0/16  |  None |
+|  vpc-0ef5baa1a1522fbc1 |  10.10.0.0/16  |  None |
++------------------------+----------------+-------+
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour4/tp04-multi-env/envs/staging$ aws ec2 describe-vpcs --filters "Name=tag:Project,Values=formation-terraform" --query 'Vpcs[].VpcId'
+[
+    "vpc-0cabab7f7a0ce0c1b",
+    "vpc-0ea6f097cb428d514"
+]
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour4/tp04-multi-env/envs/staging$ aws ec2 describe-nat-gateways --filter "Name=state,Values=available,pending" --query 'NatGateways[].NatGatewayId'
+[
+    "nat-0f0b7aa446d97fec5",
+    "nat-0159f40aa48032a72",
+    "nat-0758db75581dcf7ed",
+    "nat-048249fa87d3622a7",
+    "nat-03bc30a72e89b6440",
+    "nat-0a520fa3145315b56"
+]
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour4/tp04-multi-env/envs/staging$ aws ec2 describe-addresses --query 'Addresses[?AssociationId==null].AllocationId'
+[
+    "eipalloc-08cdcb011b0de65b2",
+    "eipalloc-027a38688b25b67ba",
+    "eipalloc-04e04645b1963c103",
+    "eipalloc-01fea1a13a9880ada",
+    "eipalloc-08ca8eeadde7ee50a",
+    "eipalloc-03c503f387e14c914",
+    "eipalloc-0a101f8f3132cee62",
+    "eipalloc-05d0c5ee2ae248b85",
+    "eipalloc-088d168e0f4eceff8",
+    "eipalloc-054a5a4877ead362e",
+    "eipalloc-044a4a1d665c7959b",
+    "eipalloc-0375f12132b475a4c"
+]
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour4/tp04-multi-env/envs/staging$ aws s3api list-object-versions \
+  --bucket "${BUCKET}" \
+  --prefix "envs/dev/vpc/terraform.tfstate" \
+  --query 'Versions[].[Key, VersionId, LastModified, Size]' \
+  --output table
+
+aws: [ERROR]: An error occurred (ParamValidation): Parameter validation failed:
+Invalid bucket name "": Bucket name must match the regex "^[a-zA-Z0-9.\-_]{1,255}$" or be an ARN matching the regex "^arn:(aws).*:(s3|s3-object-lambda):[a-z\-0-9]*:[0-9]{12}:accesspoint[/:][a-zA-Z0-9\-.]{1,63}$|^arn:(aws).*:s3-outposts:[a-z\-0-9]+:[0-9]{12}:outpost[/:][a-zA-Z0-9\-]{1,63}[/:]accesspoint[/:][a-zA-Z0-9\-]{1,63}$"
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour4/tp04-multi-env/envs/staging$ BUCKET="tf-state-etudiant22-formation"
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour4/tp04-multi-env/envs/staging$ aws s3api list-object-versions \
+  --bucket "${BUCKET}" \
+  --prefix "envs/dev/vpc/terraform.tfstate" \
+  --query 'Versions[].[Key, VersionId, LastModified, Size]' \
+  --output table
+--------------------------------------------------------------------------------------------------------------
+|                                             ListObjectVersions                                             |
++--------------------------------+------------------------------------+-----------------------------+--------+
+|  envs/dev/vpc/terraform.tfstate|  rWdQpVNBxH3_icGhrM.DpfpmEI154EpP  |  2026-06-11T14:52:11+00:00  |  27915 |
+|  envs/dev/vpc/terraform.tfstate|  2RI87tBAOxeiyVn3hOTFmptIZG.X1JyW  |  2026-06-11T14:52:10+00:00  |  23115 |
++--------------------------------+------------------------------------+-----------------------------+--------+
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour4/tp04-multi-env/envs/staging$ cd ~/terraform/IPSSI-PM/jour4/tp04-multi-env/modules/vpc/
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour4/tp04-multi-env/modules/vpc$ terraform-docs markdown table --output-file README.md --output-mode inject .
+bash: terraform-docs: commande non trouvée...
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour4/tp04-multi-env/modules/vpc$ terraform-docs markdown table --output-file README.md --output-mode inject .
+README.md updated successfully
+spectre@PM-DELL:~/terraform/IPSSI-PM/jour4/tp04-multi-env/modules/vpc$ cat README.md 
+<!-- BEGIN_TF_DOCS -->
+## Requirements
+
+No requirements.
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+
+## Modules
+
+No modules.
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [aws_eip.nat](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip) | resource |
+| [aws_internet_gateway.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/internet_gateway) | resource |
+| [aws_nat_gateway.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/nat_gateway) | resource |
+| [aws_route_table.private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table) | resource |
+| [aws_route_table.public](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table) | resource |
+| [aws_route_table_association.private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association) | resource |
+| [aws_route_table_association.public](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association) | resource |
+| [aws_security_group.bastion](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
+| [aws_subnet.private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
+| [aws_subnet.public](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
+| [aws_vpc.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc) | resource |
+| [aws_vpc_security_group_egress_rule.bastion_all](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_egress_rule) | resource |
+| [aws_vpc_security_group_ingress_rule.bastion_ssh](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_ingress_rule) | resource |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_azs"></a> [azs](#input\_azs) | Liste des AZ a utiliser (minimum 2 pour la HA) | `list(string)` | <pre>[<br/>  "eu-west-3a",<br/>  "eu-west-3b"<br/>]</pre> | no |
+| <a name="input_bastion_allowed_cidr"></a> [bastion\_allowed\_cidr](#input\_bastion\_allowed\_cidr) | CIDR autorise en SSH sur le bastion (jamais 0.0.0.0/0 en prod) | `string` | `"0.0.0.0/0"` | no |
+| <a name="input_environment"></a> [environment](#input\_environment) | Environnement de deploiement (dev, staging, prod) | `string` | n/a | yes |
+| <a name="input_project_name"></a> [project\_name](#input\_project\_name) | Prefixe applique aux noms de ressources | `string` | n/a | yes |
+| <a name="input_vpc_cidr"></a> [vpc\_cidr](#input\_vpc\_cidr) | CIDR du VPC (ex: 10.10.0.0/16) | `string` | n/a | yes |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_bastion_security_group_id"></a> [bastion\_security\_group\_id](#output\_bastion\_security\_group\_id) | ID du Security Group bastion (a utiliser au TP03) |
+| <a name="output_nat_gateway_public_ip"></a> [nat\_gateway\_public\_ip](#output\_nat\_gateway\_public\_ip) | IP publique du NAT Gateway |
+| <a name="output_private_subnet_ids"></a> [private\_subnet\_ids](#output\_private\_subnet\_ids) | Map AZ -> ID de subnet prive |
+| <a name="output_public_subnet_ids"></a> [public\_subnet\_ids](#output\_public\_subnet\_ids) | Map AZ -> ID de subnet public |
+| <a name="output_vpc_cidr"></a> [vpc\_cidr](#output\_vpc\_cidr) | CIDR du VPC |
+| <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | ID du VPC |
+<!-- END_TF_DOCS -->spectre@PM-DELL:~/terraform/IPSSI-PM/jour4/tp04-multi-env/modules/vpc$ 
