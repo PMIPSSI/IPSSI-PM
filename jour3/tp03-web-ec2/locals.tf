@@ -12,7 +12,7 @@ locals {
     for idx, az in var.azs : az => cidrsubnet(var.vpc_cidr, 8, idx + 101)
   }
 
-  web_subnets = { for k, s in aws_subnet.private : k => s.id } 
+  web_subnets = { for k, s in aws_subnet.private : k => s.id }
 }
 
 

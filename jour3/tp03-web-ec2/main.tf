@@ -19,11 +19,11 @@ data "aws_ami" "al2023" {
 }
 
 resource "aws_key_pair" "formation" {
-  key_name   = "${local.name_prefix}-key"
+  key_name   = "${local.name_prefix}-etudiant22-key"
   public_key = file(pathexpand(var.public_key_path))
 
   tags = {
-    Name  = "${local.name_prefix}-key"
+    Name  = "${local.name_prefix}-etudiant22-key"
     Owner = "etudiant22"
   }
 }
@@ -81,7 +81,7 @@ resource "aws_instance" "bastion" {
   }
 
   volume_tags = {
-    Name  = "TP-PMONNIER-bastion-volume"
+    Name  = "TP-PMONNIER-bastion-root"
     Owner = "etudiant22"
   }
 }
@@ -96,4 +96,36 @@ resource "aws_eip" "bastion" {
   }
 
   depends_on = [aws_internet_gateway.main]
+}
+
+resource "aws_instance" "web" {
+  for_each = local.web_subnets
+
+  ami                    = data.aws_ami.al2023.id
+  instance_type          = var.instance_type
+  subnet_id              = each.value
+  vpc_security_group_ids = [aws_security_group.web.id]
+  key_name               = aws_key_pair.formation.key_name
+
+  user_data = templatefile("${path.module}/templates/nginx.sh.tftpl", {
+    az = each.key
+  })
+
+  user_data_replace_on_change = true
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  tags = {
+    Name  = "${local.name_prefix}-web-${each.key}"
+    Role  = "web"
+    AZ    = each.key
+    Owner = "etudiant22"
+  }
+
+  volume_tags = {
+    Name  = "${local.name_prefix}-web-${each.key}-root"
+    Owner = "etudiant22"
+  }
 }
