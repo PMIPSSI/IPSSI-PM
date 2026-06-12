@@ -16,7 +16,7 @@ data "aws_secretsmanager_secret_version" "db_password" {
 # DB Subnet Group - regroupe les 2 subnets privés DB (2 AZ)
 # ---------------------------------------------------------------
 resource "aws_db_subnet_group" "nextcloud" {
-  name        = "grp2-${var.project_name}-${var.environment}-db-subnet-group"
+  name        = lower("grp2-${var.project_name}-${var.environment}-db-subnet-group")
   description = "Subnet group RDS Multi-AZ - GRP2 ${var.project_name} ${var.environment}"
   subnet_ids  = values(var.private_db_subnet_ids)
 
@@ -34,7 +34,7 @@ resource "aws_db_subnet_group" "nextcloud" {
 # DB Parameter Group (BONUS) - active SSL et logs PG
 # ---------------------------------------------------------------
 resource "aws_db_parameter_group" "nextcloud" {
-  name        = "grp2-${var.project_name}-${var.environment}-pg16"
+  name        = lower("grp2-${var.project_name}-${var.environment}-pg16")
   family      = "postgres16"
   description = "Parametres PG16 Nextcloud - GRP2"
 
@@ -67,7 +67,7 @@ resource "aws_db_parameter_group" "nextcloud" {
 # RDS Instance - PostgreSQL 16 Multi-AZ chiffré KMS
 # ---------------------------------------------------------------
 resource "aws_db_instance" "nextcloud" {
-  identifier = "grp2-${var.project_name}-${var.environment}-nextcloud"
+  identifier = lower("grp2-${var.project_name}-${var.environment}-nextcloud")
 
   # Moteur
   engine         = "postgres"

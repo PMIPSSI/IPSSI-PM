@@ -14,8 +14,8 @@ data "aws_elb_service_account" "main" {}
 # LOCAL : locals pour les noms de buckets (DRY)
 # ---------------------------------------------------------------
 locals {
-  bucket_primary_name = "grp2-${var.project_name}-${var.environment}-nextcloud-primary"
-  bucket_logs_name    = "grp2-${var.project_name}-${var.environment}-alb-logs"
+  bucket_primary_name = lower("grp2-${var.project_name}-${var.environment}-nextcloud-primary")
+  bucket_logs_name    = lower("grp2-${var.project_name}-${var.environment}-alb-logs")
 
   common_tags = {
     Project     = var.project_name

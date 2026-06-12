@@ -12,7 +12,7 @@ resource "aws_lb" "main" {
 
   access_logs {
     bucket  = var.s3_logs_bucket_name
-    prefix  = "alb"
+    prefix  = "alb-logs"
     enabled = true
   }
 
